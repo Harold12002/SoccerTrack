@@ -70,14 +70,136 @@ export class EventsController {
             ctx.response.body = { message: "Internal server error." };
         }
     }
-    //get all top goal scores
-    //get top goal scorer
-    //oget top 5 goal scores
+    //get all goal scorers
+    async getGoalScorers(ctx: Context) {
+        try {
+            const result = await db.query(`
+                SELECT 
+                p.id AS player_id,
+                p.name,
+                COUNT(e.id) AS goals
+            FROM match_events e
+            JOIN players p ON e.player_id = p.id
+            WHERE e.event_type = 'goal'
+            GROUP BY p.id, p.name
+            ORDER BY goals DESC`);
+            ctx.response.status = 200;
+            ctx.response.body = { Scorers: result };
+        } catch (error) {
+            console.error(error);
+            ctx.response.status = 500;
+            ctx.response.body = { message: "Internal server error." };
+        }
+    }
+    //get top 5 goal scorers
+    async getTopGoalScorers(ctx: Context) {
+        try {
+            const result = await db.query(`
+                SELECT 
+                p.id AS player_id,
+                p.name,
+                COUNT(e.id) AS goals
+            FROM match_events e
+            JOIN players p ON e.player_id = p.id
+            WHERE e.event_type = 'goal'
+            GROUP BY p.id, p.name
+            ORDER BY goals DESC 
+            LIMIT 5`);
+            ctx.response.status = 200;
+            ctx.response.body = { Scorers: result };
+        } catch (error) {
+            console.error(error);
+            ctx.response.status = 500;
+            ctx.response.body = { message: "Internal server error" };
+        }
+    }
     //get all assisters
-    //get top assister
+    async getAssisters(ctx: Context) {
+        try {
+            const result = await db.query(`
+                SELECT 
+                p.id AS player_id,
+                p.name,
+                COUNT(e.id) AS assists 
+                FROM match_events e 
+                JOIN players p ON e.player_id = p.id 
+                WHERE e.event_type = 'assist' 
+                GROUP BY p.id, p.name 
+                ORDER BY assists DESC
+                `);
+            ctx.response.status = 200;
+            ctx.response.body = { Assits: result };
+        } catch (error) {
+            console.error(error);
+            ctx.response.status = 500;
+            ctx.response.body = { message: "Internal server error" };
+        }
+    }
     //get top 5 assisters
+    async getTopAssisters(ctx: Context) {
+        try {
+            const result = await db.query(`
+                SELECT 
+                p.id AS player_id,
+                p.name,
+                COUNT(e.id) AS assists 
+                FROM match_events e 
+                JOIN players p ON e.player_id = p.id 
+                WHERE e.event_type = 'assist' 
+                GROUP BY p.id, p.name 
+                ORDER BY assists DESC
+                LIMIT 5
+                `);
+            ctx.response.status = 200;
+            ctx.response.body = { Assits: result };
+        } catch (error) {
+            console.error(error);
+            ctx.response.status = 500;
+            ctx.response.body = { message: "INternal server error" };
+        }
+    }
     //get all red cards
-    //get top red cards
+    async getRedCards(ctx: Context) {
+        try {
+            const result = await db.query(`
+                SELECT 
+                p.id AS player_id,
+                p.name,
+                COUNT(e.id) AS redCards 
+                FROM match_events e 
+                JOIN players p ON e.player_id = p.id 
+                WHERE e.event_type = 'red_card' 
+                GROUP BY p.id, p.name 
+                ORDER BY redCards DESC
+                `);
+            ctx.response.status = 200;
+            ctx.response.body = { RedCards: result };
+        } catch (error) {
+            console.error(error);
+            ctx.response.status = 500;
+            ctx.response.body = { message: "Internal server error" };
+        }
+    }
     //get all yellow cards
-    //get top yellow cards
+    async getYellowCards(ctx: Context) {
+        try {
+            const result = await db.query(`
+            SELECT 
+                p.id AS player_id,
+                p.name,
+                COUNT(e.id) AS yellowCards 
+                FROM match_events e 
+                JOIN players p ON e.player_id = p.id 
+                WHERE e.event_type = 'yellow_card' 
+                GROUP BY p.id, p.name 
+                ORDER BY redCards DESC
+                `);
+            ctx.response.status = 500;
+            ctx.response.body = { YellowCards: result };
+        } catch (error) {
+            console.error(error);
+            ctx.response.status = 500;
+            ctx.response.body = { message: "Internal server error" };
+        }
+    }
 }
