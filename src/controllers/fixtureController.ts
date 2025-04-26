@@ -7,11 +7,11 @@ export class FixtureController {
         try {
             if (!ctx.state.user) {
                 ctx.response.status = 401;
-                ctx.response.body = { message: "Access denied. Please login." };
+                ctx.response.body = { message: "Unauthorized." };
                 return;
             }
 
-            //Fetch all 20 teams
+            // Fetch all 20 teams
             const teams = await db.query("SELECT id, name, venue FROM teams");
             if (teams.length !== 20) {
                 ctx.response.status = 400;
@@ -22,22 +22,21 @@ export class FixtureController {
                 return;
             }
 
-            // Create unique team pairings home and away
+            // Clear previous fixtures
+            await db.query("DELETE FROM fixtures");
 
+            // Generate all 380 pairings (same as before)
             const firstHalf: any[] = [];
             const secondHalf: any[] = [];
 
             for (let i = 0; i < teams.length; i++) {
                 for (let j = i + 1; j < teams.length; j++) {
-                    // First half i home, j away
                     firstHalf.push({
                         homeId: teams[i].id,
                         awayId: teams[j].id,
                         venue: teams[i].venue,
                         status: "scheduled",
                     });
-
-                    // Second half j home, i away
                     secondHalf.push({
                         homeId: teams[j].id,
                         awayId: teams[i].id,
@@ -47,80 +46,118 @@ export class FixtureController {
                 }
             }
 
-            // Shuffle both halves
-            const shuffle = (arr: any[]) => arr.sort(() => Math.random() - 0.5);
-            shuffle(firstHalf);
-            shuffle(secondHalf);
+            // Shuffle fixtures
+            const shuffle = (arr: any[]) =>
+                [...arr].sort(() => Math.random() - 0.5);
+            const allFixtures = shuffle([...firstHalf, ...secondHalf]);
 
-            //Combine into 38 matchdays (19 first half, 19 second half)
+            // Initialize 38 matchdays (weeks)
             const matchdays: any[][] = Array.from({ length: 38 }, () => []);
-            const allFixtures = [...firstHalf, ...secondHalf];
 
-            let round = 0;
+            // First pass: Try to place fixtures optimally
             for (const fixture of allFixtures) {
                 let placed = false;
-                while (!placed && round < 38 * 10) {
-                    const week = round % 38;
+
+                for (let week = 0; week < 38 && !placed; week++) {
                     const currentWeek = matchdays[week];
 
-                    const isClashing = currentWeek.some((f) =>
+                    // Check for team OR venue conflicts
+                    const isConflict = currentWeek.some((f) =>
                         f.homeId === fixture.homeId ||
                         f.awayId === fixture.homeId ||
                         f.homeId === fixture.awayId ||
-                        f.awayId === fixture.awayId
+                        f.awayId === fixture.awayId ||
+                        f.venue === fixture.venue // Stadium sharing conflict
                     );
 
-                    if (!isClashing && currentWeek.length < 10) {
+                    if (!isConflict && currentWeek.length < 10) {
                         currentWeek.push(fixture);
                         placed = true;
                     }
-
-                    round++;
                 }
             }
 
-            //Set match dates and time
+            // Second pass: Force-place remaining fixtures (relax rules)
+            const unplacedFixtures = allFixtures.filter((f) =>
+                !matchdays.flat().some((m) =>
+                    m.homeId === f.homeId && m.awayId === f.awayId
+                )
+            );
+
+            for (const fixture of unplacedFixtures) {
+                for (let week = 0; week < 38; week++) {
+                    const currentWeek = matchdays[week];
+                    if (currentWeek.length < 10) {
+                        currentWeek.push(fixture);
+                        break;
+                    }
+                }
+            }
+
+            // Assign match dates (Friday/Saturday/Sunday)
             const today = new Date();
-            while (today.getDay() !== 6) today.setDate(today.getDate() + 1); // Next Saturday
+            while (today.getDay() !== 5) today.setDate(today.getDate() + 1); // Next Friday
             const currentDate = new Date(today);
 
             for (let week = 0; week < 38; week++) {
+                const friday = new Date(currentDate);
                 const saturday = new Date(currentDate);
                 const sunday = new Date(currentDate);
-                sunday.setDate(saturday.getDate() + 1);
+                saturday.setDate(friday.getDate() + 1);
+                sunday.setDate(friday.getDate() + 2);
 
-                for (let i = 0; i < 10; i++) {
-                    const fixture = matchdays[week][i];
-                    const matchDate = new Date(i < 5 ? saturday : sunday);
-                    matchDate.setHours(15, 0, 0, 0); // 15:00
+                const weekFixtures = matchdays[week];
 
-                    fixture.match_date = matchDate;
+                // Friday (3 games)
+                for (let i = 0; i < 3 && i < weekFixtures.length; i++) {
+                    const matchDate = new Date(friday);
+                    matchDate.setHours(19, 0, 0, 0); // 7:00 PM
+                    weekFixtures[i].match_date = matchDate;
                 }
 
-                //next weekend
-                currentDate.setDate(currentDate.getDate() + 7);
+                // Saturday (5 games)
+                for (let i = 3; i < 8 && i < weekFixtures.length; i++) {
+                    const matchDate = new Date(saturday);
+                    matchDate.setHours(12 + (i - 3) * 2, 0, 0, 0); // 12 PM, 2 PM, etc.
+                    weekFixtures[i].match_date = matchDate;
+                }
+
+                // Sunday (remaining 2 games)
+                for (let i = 8; i < weekFixtures.length; i++) {
+                    const matchDate = new Date(sunday);
+                    matchDate.setHours(15, 0, 0, 0); // 3:00 PM
+                    weekFixtures[i].match_date = matchDate;
+                }
+
+                currentDate.setDate(currentDate.getDate() + 7); // Next week
             }
 
-            //Insert all fixtures
+            // Insert into database
+            let insertedCount = 0;
             for (const week of matchdays) {
                 for (const f of week) {
                     await db.query(
                         "INSERT INTO fixtures (home_team_id, away_team_id, match_date, venue, status) VALUES (?, ?, ?, ?, ?)",
                         [f.homeId, f.awayId, f.match_date, f.venue, f.status],
                     );
+                    insertedCount++;
                 }
             }
 
             ctx.response.status = 201;
             ctx.response.body = {
-                message: "All fixtures successfully generated and saved.",
+                message:
+                    `Successfully generated ${insertedCount}/380 fixtures.`,
+                details: {
+                    fridayGames: 3,
+                    saturdayGames: 5,
+                    sundayGames: 2,
+                },
             };
         } catch (error) {
-            console.error("Error generating fixtures:", error);
+            console.error("Error:", error);
             ctx.response.status = 500;
-            ctx.response.body = {
-                message: "Internal server error.",
-            };
+            ctx.response.body = { message: "Failed to generate fixtures." };
         }
     }
     //get all fixtures

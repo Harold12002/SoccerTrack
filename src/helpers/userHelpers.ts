@@ -1,5 +1,5 @@
 import { db } from "../db/db.ts";
-import { compare, Context, create, hash, verify } from "../imports.ts";
+import { compare, create, hash, verify } from "../imports.ts";
 
 //function to hash password
 export async function hashPassword(password: string) {
@@ -16,31 +16,16 @@ export async function createSecretKey() {
         ["sign", "verify"],
     );
 }
-//function to create role
-export function roleMiddleware(requiredRole: string[]) {
-    return async (ctx: Context, next: Function) => {
-        const user = ctx.state.user;
 
-        if (!user || !requiredRole.includes(user.role)) {
-            ctx.response.status = 403;
-            ctx.response.body = {
-                error: "You are unauthorized to perform this action.",
-            };
-            return;
-        }
-        await next();
-    };
-}
 //function to generate jwt
 export async function generateToken(
     id: number,
     username: string,
-    role: string,
 ) {
     const payLoad = {
         username,
         id,
-        role,
+
         exp: Math.floor(Date.now() / 1000) + 60 * 60, //valid for 1hr
     };
 

@@ -23,7 +23,7 @@ export async function authMiddleware(ctx: Context, next: Function) {
         const payLoad = await verify(token, cryptoKey);
 
         // Check the payload for id and role
-        if (!payLoad || !payLoad.id || !payLoad.role) {
+        if (!payLoad || !payLoad.id) {
             ctx.response.status = 401;
             ctx.response.body = { error: "Invalid token payload" };
             return;

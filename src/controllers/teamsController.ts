@@ -2,56 +2,65 @@ import { db } from "../db/db.ts";
 import { Context } from "../imports.ts";
 
 export class TeamsController {
-    //add team
+    // Add multiple teams
     async addTeams(ctx: Context) {
         try {
+            // Check authentication
             if (!ctx.state.user) {
                 ctx.response.status = 400;
                 ctx.response.body = {
-                    message: "Access denied. Please login to add team.",
+                    message: "Access denied. Please login to add teams.",
                 };
                 return;
             }
 
             const body = await ctx.request.body.json();
 
-            const {
-                name,
-                home_stadium,
-                coach,
-            } = body;
-
-            //validate input
-            if (!name || !home_stadium || !coach) {
+            // Ensure input is an array
+            if (!Array.isArray(body)) {
                 ctx.response.status = 400;
                 ctx.response.body = {
-                    message: "Invalid input. All fields are required.",
+                    message: "Invalid input. Array of teams expected.",
                 };
                 return;
             }
 
-            //checking if team already exists
-            const result = await db.query(
-                `
-                SELECT * FROM TEAMS where name = ?`,
-                [name],
-            );
-            if (result.length > 0) {
-                ctx.response.status = 409;
-                ctx.response.body = { message: "Team already exist" };
-                return;
+            for (const team of body) {
+                const { name, venue } = team;
+
+                // Validate each team's data
+                if (!name || !venue) {
+                    ctx.response.status = 400;
+                    ctx.response.body = {
+                        message:
+                            "Invalid input. Each team must have a name and venue.",
+                    };
+                    return;
+                }
+
+                // Check if team already exists
+                const result = await db.query(
+                    `SELECT * FROM teams WHERE name = ?`,
+                    [name],
+                );
+
+                if (result.length > 0) {
+                    ctx.response.status = 409;
+                    ctx.response.body = {
+                        message: `Team '${name}' already exists.`,
+                    };
+                    return;
+                }
+
+                // Insert the new team
+                await db.execute(
+                    `INSERT INTO teams (name, venue) VALUES (?, ?)`,
+                    [name, venue],
+                );
             }
-            await db.execute(
-                `
-                INSERT INTO teams (name, home_stadium, coach) VALUES (?,?,?)`,
-                [
-                    name,
-                    home_stadium,
-                    coach,
-                ],
-            );
+
             ctx.response.status = 201;
-            ctx.response.body = { message: "Team added successfully" };
+            ctx.response.body = { message: "Teams added successfully." };
         } catch (error) {
             console.error(error);
             ctx.response.status = 500;

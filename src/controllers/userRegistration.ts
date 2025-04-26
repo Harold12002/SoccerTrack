@@ -141,7 +141,6 @@ export class UserControllers {
             const token = await generateToken(
                 user.id,
                 user.username,
-                user.role,
             );
 
             //respond with token

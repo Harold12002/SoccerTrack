@@ -12,7 +12,7 @@ app.use(routes.allowedMethods());
 
 // Default root route
 app.use((ctx) => {
-    ctx.response.body = "Auction system backend";
+    ctx.response.body = "Soccer Track system backend";
 });
 
 console.log(`Server running on http://localhost:${PORT}`);
