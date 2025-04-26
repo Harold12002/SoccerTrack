@@ -1,52 +1,30 @@
-{"file_path":"/home/harold/Desktop/soccer/server.ts","last_edit":1745318479622,"total_time":2425,"is_writing":0,"_id":"46cDh8PBeNKGnBX7"}
+{"file_path":"/home/harold/Desktop/soccer/server.ts","last_edit":1745627582237,"total_time":6753,"is_writing":0,"_id":"46cDh8PBeNKGnBX7"}
 {"file_path":"/home/harold/Desktop/soccer/.env","last_edit":1745498129242,"total_time":86316,"is_writing":0,"_id":"4XiQID5ibUBbGubC"}
 {"file_path":"/home/harold/Desktop/soccer/src/controllers/fmatchController.ts","last_edit":1745389470895,"total_time":119970,"is_writing":0,"_id":"5VYYrMURtuwuESCV"}
 {"file_path":"/home/harold/Desktop/soccer/src/controllers/resultsController.ts","last_edit":1745482071758,"total_time":1195650,"is_writing":0,"_id":"5x7rLAddYrRj60bQ"}
 {"file_path":"/home/harold/Desktop/soccer/src/imports.ts","last_edit":1745497800309,"total_time":92778,"is_writing":0,"_id":"8GHddBFzfovjjrQ4"}
 {"file_path":"/home/harold/Desktop/soccer/src/helpers/resultsHelper.ts","last_edit":1745386648713,"total_time":17520,"is_writing":0,"_id":"BEkriYqnbTnJJP5t"}
-{"file_path":"extension-output-denoland.vscode-deno-#1-Deno Language Server","last_edit":1745481810240,"total_time":1,"is_writing":0,"_id":"BpKXnhdit1uLrnQn"}
+{"file_path":"extension-output-denoland.vscode-deno-#1-Deno Language Server","last_edit":1745627928759,"total_time":2,"is_writing":0,"_id":"BpKXnhdit1uLrnQn"}
 {"file_path":"/home/harold/Desktop/soccer/src/helpers/userHelpers.ts","last_edit":1745517595926,"total_time":22795,"is_writing":0,"_id":"DcHeXatECjCfTYym"}
+{"file_path":"/home/harold/Desktop/soccer/myData.txt","last_edit":1745630189470,"total_time":670407,"is_writing":0,"_id":"EKLodX25l7PEDg6I"}
 {"file_path":"/home/harold/Desktop/soccer/src/routes/routes.ts.git","last_edit":1745515657648,"total_time":1,"is_writing":0,"_id":"ESbIfIHG7rYhLMh7"}
 {"file_path":"/home/harold/Desktop/soccer/src/controllers/miscControllers.ts","last_edit":1745515044800,"total_time":137876,"is_writing":0,"_id":"FXANXoQG997MDXIc"}
+{"file_path":"/home/harold/Desktop/soccer/myData.ts","last_edit":1745627870161,"total_time":3,"is_writing":0,"_id":"FjaChd7QhYGlK897"}
 {"file_path":"/home/harold/Desktop/soccer/src/routes/routes.ts","last_edit":1745515640647,"total_time":983665,"is_writing":0,"_id":"KqkO2mJeeIy0r8Ve"}
 {"file_path":"/home/harold/Desktop/soccer/src/controllers/teamsController.ts","last_edit":1745518965112,"total_time":1210650,"is_writing":0,"_id":"MrKkgJ6b5eWue7IV"}
-{"file_path":"/home/harold/Desktop/soccer/authMiddleware.ts","last_edit":1745517493836,"total_time":20912,"is_writing":0,"_id":"V9lxUdyILlZNYt65"}
+{"file_path":"/home/harold/Desktop/soccer/authMiddleware.ts","last_edit":1745627656480,"total_time":24208,"is_writing":0,"_id":"V9lxUdyILlZNYt65"}
 {"file_path":"/home/harold/Desktop/soccer/src/controllers/miscController.ts","last_edit":1745482373470,"total_time":17633,"is_writing":0,"_id":"W5WeQsRpZYDyMpUu"}
+{"file_path":"/home/harold/Desktop/soccer/my data","last_edit":1745627853102,"total_time":9,"is_writing":0,"_id":"Wq0A4IPIzsrY5mSQ"}
 {"file_path":"/home/harold/Desktop/soccer/.gitignore","last_edit":1745498152552,"total_time":3559,"is_writing":0,"_id":"Y806g8AdsRk5bAWn"}
-{"file_path":"/home/harold/Desktop/soccer/src/controllers/fixtureController.ts","last_edit":1745520503941,"total_time":1060351,"is_writing":0,"_id":"YJKNyDbMMECji77n"}
+{"file_path":"/home/harold/Desktop/soccer/src/controllers/fixtureController.ts","last_edit":1745630108755,"total_time":1136692,"is_writing":0,"_id":"YJKNyDbMMECji77n"}
 {"file_path":"/home/harold/Desktop/soccer/aa","last_edit":1745501776842,"total_time":36513,"is_writing":0,"_id":"ZH7A7mlKMQCiJRUe"}
 {"file_path":"/home/harold/Desktop/soccer/src/controllers/eventsController.ts","last_edit":1745513981464,"total_time":1171455,"is_writing":0,"_id":"aDX2dNbxMKQqWBhT"}
 {"file_path":"/home/harold/Desktop/soccer/src/db/db.ts","last_edit":1745498103907,"total_time":134561,"is_writing":0,"_id":"axr989WQhugOyxlc"}
 {"file_path":"/home/harold/Desktop/soccer/src/controllers/playersController.ts","last_edit":1745333340592,"total_time":966997,"is_writing":0,"_id":"iMl4VC1fWDudVVDF"}
+{"file_path":"/home/harold/Desktop/soccer/authMiddleware.ts.git","last_edit":1745630658147,"total_time":0,"is_writing":0,"_id":"kkuv0Gj7KPhs01BG"}
 {"file_path":"/home/harold/Desktop/soccer/src/controllers/userRegistration.ts","last_edit":1745517611762,"total_time":486214,"is_writing":0,"_id":"lwaKMnvJoybQu97b"}
 {"file_path":"git/scm0/input","last_edit":1745511512346,"total_time":7,"is_writing":0,"_id":"nxn7Q32XCSoh0ZbJ"}
-{"file_path":"/home/harold/Desktop/soccer/server.ts","last_edit":1745627582237,"total_time":6753,"is_writing":0,"_id":"46cDh8PBeNKGnBX7"}
-{"file_path":"/home/harold/Desktop/soccer/authMiddleware.ts","last_edit":1745627633577,"total_time":24104,"is_writing":0,"_id":"V9lxUdyILlZNYt65"}
-{"file_path":"/home/harold/Desktop/soccer/authMiddleware.ts","last_edit":1745627656480,"total_time":24208,"is_writing":0,"_id":"V9lxUdyILlZNYt65"}
-{"file_path":"/home/harold/Desktop/soccer/src/controllers/fixtureController.ts","last_edit":1745627835464,"total_time":1060355,"is_writing":0,"_id":"YJKNyDbMMECji77n"}
-{"file_path":"/home/harold/Desktop/soccer/my data","last_edit":1745627853102,"total_time":9,"is_writing":0,"_id":"Wq0A4IPIzsrY5mSQ"}
-{"file_path":"/home/harold/Desktop/soccer/myData.ts","last_edit":1745627870161,"total_time":3,"is_writing":0,"_id":"FjaChd7QhYGlK897"}
-{"file_path":"/home/harold/Desktop/soccer/src/controllers/fixtureController.ts","last_edit":1745627899926,"total_time":1060822,"is_writing":0,"_id":"YJKNyDbMMECji77n"}
-{"file_path":"extension-output-denoland.vscode-deno-#1-Deno Language Server","last_edit":1745627928759,"total_time":2,"is_writing":0,"_id":"BpKXnhdit1uLrnQn"}
-{"file_path":"/home/harold/Desktop/soccer/src/controllers/fixtureController.ts","last_edit":1745627988075,"total_time":1063080,"is_writing":0,"_id":"YJKNyDbMMECji77n"}
-{"file_path":"/home/harold/Desktop/soccer/src/controllers/fixtureController.ts","last_edit":1745628513417,"total_time":1068487,"is_writing":0,"_id":"YJKNyDbMMECji77n"}
-{"file_path":"/home/harold/Desktop/soccer/src/controllers/fixtureController.ts","last_edit":1745628521940,"total_time":1070419,"is_writing":0,"_id":"YJKNyDbMMECji77n"}
-{"file_path":"/home/harold/Desktop/soccer/src/controllers/fixtureController.ts","last_edit":1745629089544,"total_time":1070422,"is_writing":0,"_id":"YJKNyDbMMECji77n"}
-{"file_path":"/home/harold/Desktop/soccer/src/controllers/fixtureController.ts","last_edit":1745629100164,"total_time":1070423,"is_writing":0,"_id":"YJKNyDbMMECji77n"}
-{"file_path":"/home/harold/Desktop/soccer/src/controllers/fixtureController.ts","last_edit":1745629141535,"total_time":1076141,"is_writing":0,"_id":"YJKNyDbMMECji77n"}
-{"file_path":"/home/harold/Desktop/soccer/src/controllers/fixtureController.ts","last_edit":1745629150983,"total_time":1076142,"is_writing":0,"_id":"YJKNyDbMMECji77n"}
-{"file_path":"/home/harold/Desktop/soccer/src/controllers/fixtureController.ts","last_edit":1745629159459,"total_time":1077153,"is_writing":0,"_id":"YJKNyDbMMECji77n"}
-{"file_path":"/home/harold/Desktop/soccer/src/controllers/fixtureController.ts","last_edit":1745629187463,"total_time":1077293,"is_writing":0,"_id":"YJKNyDbMMECji77n"}
-{"file_path":"/home/harold/Desktop/soccer/src/controllers/fixtureController.ts","last_edit":1745629229350,"total_time":1079834,"is_writing":0,"_id":"YJKNyDbMMECji77n"}
-{"file_path":"/home/harold/Desktop/soccer/myData.txt","last_edit":1745629648488,"total_time":567293,"is_writing":0,"_id":"EKLodX25l7PEDg6I"}
-{"file_path":"/home/harold/Desktop/soccer/src/controllers/fixtureController.ts","last_edit":1745629661443,"total_time":1095008,"is_writing":0,"_id":"YJKNyDbMMECji77n"}
-{"file_path":"/home/harold/Desktop/soccer/src/controllers/fixtureController.ts","last_edit":1745629670592,"total_time":1097788,"is_writing":0,"_id":"YJKNyDbMMECji77n"}
-{"file_path":"/home/harold/Desktop/soccer/src/controllers/fixtureController.ts","last_edit":1745629697470,"total_time":1103023,"is_writing":0,"_id":"YJKNyDbMMECji77n"}
-{"file_path":"/home/harold/Desktop/soccer/myData.txt","last_edit":1745629707599,"total_time":567297,"is_writing":0,"_id":"EKLodX25l7PEDg6I"}
-{"file_path":"/home/harold/Desktop/soccer/src/controllers/fixtureController.ts","last_edit":1745629840060,"total_time":1113787,"is_writing":0,"_id":"YJKNyDbMMECji77n"}
-{"file_path":"/home/harold/Desktop/soccer/src/controllers/fixtureController.ts","last_edit":1745629853525,"total_time":1113791,"is_writing":0,"_id":"YJKNyDbMMECji77n"}
-{"file_path":"/home/harold/Desktop/soccer/src/controllers/fixtureController.ts","last_edit":1745629938883,"total_time":1122904,"is_writing":0,"_id":"YJKNyDbMMECji77n"}
-{"file_path":"/home/harold/Desktop/soccer/src/controllers/fixtureController.ts","last_edit":1745630074960,"total_time":1122907,"is_writing":0,"_id":"YJKNyDbMMECji77n"}
-{"file_path":"/home/harold/Desktop/soccer/src/controllers/fixtureController.ts","last_edit":1745630092301,"total_time":1126310,"is_writing":0,"_id":"YJKNyDbMMECji77n"}
-{"file_path":"/home/harold/Desktop/soccer/src/controllers/fixtureController.ts","last_edit":1745630108755,"total_time":1136692,"is_writing":0,"_id":"YJKNyDbMMECji77n"}
-{"file_path":"/home/harold/Desktop/soccer/myData.txt","last_edit":1745630189470,"total_time":670407,"is_writing":0,"_id":"EKLodX25l7PEDg6I"}
+{"file_path":"/home/harold/Desktop/soccer/server.ts","last_edit":1745634724149,"total_time":8395,"is_writing":0,"_id":"46cDh8PBeNKGnBX7"}
+{"file_path":"/home/harold/Desktop/soccer/server.ts","last_edit":1745634735492,"total_time":9310,"is_writing":0,"_id":"46cDh8PBeNKGnBX7"}
+{"file_path":"/home/harold/Desktop/soccer/server.ts","last_edit":1745634750618,"total_time":13936,"is_writing":0,"_id":"46cDh8PBeNKGnBX7"}
+{"file_path":"/home/harold/Desktop/soccer/server.ts","last_edit":1745634766448,"total_time":24531,"is_writing":0,"_id":"46cDh8PBeNKGnBX7"}
