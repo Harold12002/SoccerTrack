@@ -8,7 +8,7 @@ const app = new Application();
 
 // Enable CORS for all routes
 app.use(oakCors({
-    origin: ["http://localhost:5173"],
+    origin: ["http://localhost:8081", "http://10.250.225.47:8081"],
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
@@ -23,5 +23,5 @@ app.use((ctx) => {
     ctx.response.body = "Soccer Track system backend";
 });
 
-console.log(`Server running on http://localhost:${PORT}`);
-await app.listen({ port: PORT });
+console.log(`Server running on http://0.0.0.0:${PORT}`);
+await app.listen({ hostname: "0.0.0.0", port: PORT });

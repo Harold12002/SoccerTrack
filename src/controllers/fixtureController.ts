@@ -212,9 +212,17 @@ export class FixtureController {
             const now = new Date().toISOString();
             const result = await db.query(
                 `
-            SELECT * FROM fixtures 
-            WHERE match_date > ?
-            ORDER BY match_date ASC
+            SELECT 
+                f.id,
+                f.match_date,
+                f.venue,
+                home.name as home_team_name,
+                away.name as away_team_name
+            FROM fixtures f
+            JOIN teams home ON f.home_team_id = home.id
+            JOIN teams away ON f.away_team_id = away.id
+            WHERE f.match_date > ?
+            ORDER BY f.match_date ASC
             LIMIT 5
         `,
                 [now],
