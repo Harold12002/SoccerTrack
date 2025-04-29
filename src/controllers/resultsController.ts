@@ -6,77 +6,81 @@ export class ResultsController {
     //add result
     async addResults(ctx: Context) {
         try {
-            if (!ctx.state.user) {
-                ctx.response.status = 401;
-                ctx.response.body = { message: "Unauthorized." };
-                return;
-            }
-
-            const { fixture_id, home_goals, away_goals, status } = await ctx
-                .request.body.json();
-
-            if (
-                fixture_id == null || home_goals == null ||
-                away_goals == null || !status
-            ) {
+            const body = await ctx.request.body.json();
+            // Ensure input is an array
+            if (!Array.isArray(body)) {
                 ctx.response.status = 400;
-                ctx.response.body = { message: "Missing required fields." };
+                ctx.response.body = {
+                    message: "Invalid input. Array of teams expected.",
+                };
                 return;
             }
+            for (const result of body) {
+                const { fixture_id, home_goals, away_goals, status } = result;
 
-            const validStatus = ["completed", "postponed"];
-            if (!validStatus.includes(status)) {
-                ctx.response.status = 400;
-                ctx.response.body = { message: "Invalid status value." };
-                return;
-            }
+                if (
+                    fixture_id === undefined || home_goals === undefined ||
+                    away_goals === undefined || !status
+                ) {
+                    ctx.response.status = 400;
+                    ctx.response.body = { message: "Missing required fields." };
+                    return;
+                }
 
-            // Get fixture info
-            const [fixture] = await db.query(
-                `SELECT home_team_id, away_team_id FROM fixtures WHERE id = ?`,
-                [fixture_id],
-            );
+                const validStatus = ["completed", "postponed"];
+                if (!validStatus.includes(status)) {
+                    ctx.response.status = 400;
+                    ctx.response.body = { message: "Invalid status value." };
+                    return;
+                }
 
-            if (!fixture) {
-                ctx.response.status = 404;
-                ctx.response.body = { message: "Fixture not found." };
-                return;
-            }
+                // Get fixture info
+                const [fixture] = await db.query(
+                    `SELECT home_team_id, away_team_id FROM fixtures WHERE id = ?`,
+                    [fixture_id],
+                );
 
-            const home_team_id = fixture.home_id;
-            const away_team_id = fixture.away_id;
+                if (!fixture) {
+                    ctx.response.status = 404;
+                    ctx.response.body = { message: "Fixture not found." };
+                    return;
+                }
 
-            let winner = null;
-            if (home_goals > away_goals) {
-                winner = home_team_id;
-            } else if (away_goals > home_goals) {
-                winner = away_team_id;
-            }
+                const home_team_id = fixture.home_team_id;
+                const away_team_id = fixture.away_team_id;
 
-            // Save result
-            await db.query(
-                `
+                let winner = null;
+                if (home_goals > away_goals) {
+                    winner = home_team_id;
+                } else if (away_goals > home_goals) {
+                    winner = away_team_id;
+                }
+
+                // Save result
+                await db.query(
+                    `
             INSERT INTO results (
                 fixture_id, home_team_id, away_team_id, home_goals, away_goals, status, winner
             ) VALUES (?, ?, ?, ?, ?, ?, ?)
         `,
-                [
-                    fixture_id,
+                    [
+                        fixture_id,
+                        home_team_id,
+                        away_team_id,
+                        home_goals,
+                        away_goals,
+                        status,
+                        winner,
+                    ],
+                );
+                //update standings
+                await updateStandings(
                     home_team_id,
                     away_team_id,
                     home_goals,
                     away_goals,
-                    status,
-                    winner,
-                ],
-            );
-            //update standings
-            await updateStandings(
-                home_team_id,
-                away_team_id,
-                home_goals,
-                away_goals,
-            );
+                );
+            }
 
             ctx.response.status = 201;
             ctx.response.body = { message: "Result recorded." };
@@ -90,10 +94,21 @@ export class ResultsController {
     async getAllResults(ctx: Context) {
         try {
             const result = await db.query(`
-                SELECT * FROM results`);
+                SELECT 
+    r.id,
+    home.name AS home_team_name,
+    away.name AS away_team_name,
+    r.home_goals,
+    r.away_goals
+FROM results r
+JOIN teams home ON r.home_team_id = home.id
+JOIN teams away ON r.away_team_id = away.id
+ORDER BY r.id DESC
+;
+`);
             if (result.length > 0) {
                 ctx.response.status = 200;
-                ctx.response.body = { RESULTS: result };
+                ctx.response.body = { results: result };
             } else {
                 ctx.response.status = 404;
                 ctx.response.body = { message: "No results found" };

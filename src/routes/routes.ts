@@ -59,6 +59,7 @@ router.get("/assisters", eventsControllers.getAssisters);
 router.get("/top-assisters", eventsControllers.getTopAssisters);
 router.get("/red-cards", eventsControllers.getRedCards);
 router.get("/yellow-cards", eventsControllers.getYellowCards);
+router.get("/matches/events/:id", eventsControllers.getMatchDetails);
 
 //misc routes
 router.get("/standings", miscControllers.getStandings);

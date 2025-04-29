@@ -15,57 +15,66 @@ export class PlayersController {
 
             const body = await ctx.request.body.json();
 
-            let {
-                team_id,
-                name,
-                position,
-                jersey_number,
-                role,
-            } = body;
-
-            // Basic required fields
-            if (!team_id || !name || !position || !jersey_number) {
+            //ensure input is array
+            if (!Array.isArray(body)) {
                 ctx.response.status = 400;
                 ctx.response.body = {
-                    message: "Invalid input. All fileds required.",
+                    message: "Invalid input. Array of players expected.",
                 };
                 return;
             }
+            for (const player of body) {
+                let {
+                    team_id,
+                    name,
+                    position,
+                    jersey_number,
+                    role,
+                } = player;
 
-            // Validate ENUMs
-            const validPositions = ["GK", "DF", "MF", "FW"];
-            const validRoles = ["player", "captain", "vice_captain"];
+                // Basic required fields
+                if (!team_id || !name || !position || !jersey_number) {
+                    ctx.response.status = 400;
+                    ctx.response.body = {
+                        message: "Invalid input. All fileds required.",
+                    };
+                    return;
+                }
 
-            if (!validPositions.includes(position)) {
-                ctx.response.status = 400;
-                ctx.response.body = { message: "Invalid position." };
-                return;
+                // Validate ENUMs
+                const validPositions = ["GK", "DF", "MF", "FW"];
+                const validRoles = ["player", "captain", "vice_captain"];
+
+                if (!validPositions.includes(position)) {
+                    ctx.response.status = 400;
+                    ctx.response.body = { message: "Invalid position." };
+                    return;
+                }
+
+                if (!role) role = "player";
+                if (!validRoles.includes(role)) {
+                    ctx.response.status = 400;
+                    ctx.response.body = { message: "Invalid role." };
+                    return;
+                }
+
+                // Check if player already exists in team
+                const existing = await db.query(
+                    "SELECT * FROM players WHERE team_id = ? AND name = ?",
+                    [team_id, name],
+                );
+                if (existing.length > 0) {
+                    ctx.response.status = 400;
+                    ctx.response.body = { message: "Player already added." };
+                    return;
+                }
+
+                // Insert player
+                await db.query(
+                    "INSERT INTO players (team_id, name, position, jersey_number, role) VALUES (?,?,?,?,?)",
+                    [team_id, name, position, jersey_number, role],
+                );
             }
-
-            if (!role) role = "player";
-            if (!validRoles.includes(role)) {
-                ctx.response.status = 400;
-                ctx.response.body = { message: "Invalid role." };
-                return;
-            }
-
-            // Check if player already exists in team
-            const existing = await db.query(
-                "SELECT * FROM players WHERE team_id = ? AND name = ?",
-                [team_id, name],
-            );
-            if (existing.length > 0) {
-                ctx.response.status = 400;
-                ctx.response.body = { message: "Player already added." };
-                return;
-            }
-
-            // Insert player
-            await db.query(
-                "INSERT INTO players (team_id, name, position, jersey_number, role) VALUES (?,?,?,?,?)",
-                [team_id, name, position, jersey_number, role],
-            );
-
             ctx.response.status = 201;
             ctx.response.body = { message: "Player added successfully." };
         } catch (error) {

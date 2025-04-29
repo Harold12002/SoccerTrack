@@ -202,4 +202,43 @@ export class EventsController {
             ctx.response.body = { message: "Internal server error" };
         }
     }
+    // Get match details with statistics
+    async getMatchDetails(ctx: any) {
+        try {
+            const { id } = ctx.params;
+
+            // Get basic match info
+            const [match] = await db.query(
+                `SELECT * FROM fixtures WHERE id = ?`,
+                [id],
+            );
+
+            if (!match) {
+                ctx.response.status = 404;
+                ctx.response.body = { message: "Match not found." };
+                return;
+            }
+
+            // Get match statistics with player names
+            const stats = await db.query(
+                `SELECT ms.*, p.name as player_name, t.name as team_name
+                 FROM match_stats ms
+                 JOIN players p ON ms.player_id = p.id
+                 JOIN teams t ON ms.team_id = t.id
+                 WHERE ms.fixture_id = ?
+                 ORDER BY ms.minute ASC`,
+                [id],
+            );
+
+            ctx.response.status = 200;
+            ctx.response.body = {
+                match,
+                statistics: stats,
+            };
+        } catch (error) {
+            console.error(error);
+            ctx.response.status = 500;
+            ctx.response.body = { message: "Internal server error." };
+        }
+    }
 }
