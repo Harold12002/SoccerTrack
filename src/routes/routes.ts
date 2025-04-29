@@ -50,6 +50,7 @@ router.post("/add-results", resultsControllers.addResults);
 router.get("/all-results", resultsControllers.getAllResults);
 router.get("/results/team/:id", resultsControllers.getResultsByTeam);
 router.get("/results/latest", resultsControllers.latestResults);
+router.get("/results-with-stats", resultsControllers.getAllResultsWithStats);
 
 //events routes
 router.post("/add-events", eventsControllers.addMatchEvent);

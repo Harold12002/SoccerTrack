@@ -5,67 +5,141 @@ export class EventsController {
     //add match events
     async addMatchEvent(ctx: Context) {
         try {
-            if (!ctx.state.user) {
-                ctx.response.status = 401;
-                ctx.response.body = { message: "Unauthorized. Please login." };
-                return;
-            }
-
-            const {
-                fixture_id,
-                player_id,
-                team_id,
-                event_type,
-                minute,
-                assisted_by,
-                substituted_for,
-            } = await ctx.request.body.json();
-
-            // Basic validation
-            const validEvents = [
-                "goal",
-                "assist",
-                "yellow_card",
-                "red_card",
-                "substitution",
-            ];
-            if (
-                !fixture_id || !player_id || !team_id || !event_type ||
-                minute == null
-            ) {
+            const body = await ctx.request.body.json();
+            if (!Array.isArray(body)) {
                 ctx.response.status = 400;
-                ctx.response.body = { message: "Missing required fields." };
+                ctx.response.body = {
+                    message: "Invalid input. Array of results expected.",
+                };
                 return;
             }
-
-            if (!validEvents.includes(event_type)) {
-                ctx.response.status = 400;
-                ctx.response.body = { message: "Invalid event_type." };
-                return;
-            }
-
-            // Insert into match_stats
-            await db.query(
-                `
-            INSERT INTO match_stats (
-                fixture_id, player_id, team_id, event_type, minute, assisted_by, substituted_for
-            ) VALUES (?, ?, ?, ?, ?, ?, ?)
-        `,
-                [
+            for (const event of body) {
+                // Parse request body
+                const {
                     fixture_id,
                     player_id,
                     team_id,
                     event_type,
                     minute,
-                    assisted_by || null,
-                    substituted_for || null,
-                ],
-            );
+                    assisted_by,
+                    substituted_for,
+                } = event;
+
+                // Basic validation
+                const validEvents = [
+                    "goal",
+                    "assist",
+                    "yellow_card",
+                    "red_card",
+                    "substitution",
+                ];
+
+                if (
+                    !fixture_id || !player_id || !team_id || !event_type ||
+                    minute == null || minute < 0 || minute > 130 // Assuming max match time is 130 mins
+                ) {
+                    ctx.response.status = 400;
+                    ctx.response.body = {
+                        message: "Missing required fields or invalid minute.",
+                    };
+                    return;
+                }
+
+                if (!validEvents.includes(event_type)) {
+                    ctx.response.status = 400;
+                    ctx.response.body = { message: "Invalid event_type." };
+                    return;
+                }
+
+                // Check if player exists
+                const [player] = await db.query(
+                    `SELECT id FROM players WHERE id = ?`,
+                    [player_id],
+                );
+                if (!player) {
+                    ctx.response.status = 404;
+                    ctx.response.body = {
+                        message: `Player with id ${player_id} not found.`,
+                    };
+                    return;
+                }
+
+                // Check if team exists
+                const [team] = await db.query(
+                    `SELECT id FROM teams WHERE id = ?`,
+                    [team_id],
+                );
+                if (!team) {
+                    ctx.response.status = 404;
+                    ctx.response.body = {
+                        message: `Team with id ${team_id} not found.`,
+                    };
+                    return;
+                }
+
+                // Check if fixture exists
+                const [fixture] = await db.query(
+                    `SELECT id FROM fixtures WHERE id = ?`,
+                    [fixture_id],
+                );
+                if (!fixture) {
+                    ctx.response.status = 404;
+                    ctx.response.body = {
+                        message: `Fixture with id ${fixture_id} not found.`,
+                    };
+                    return;
+                }
+
+                // Validate substitution-specific fields
+                if (event_type === "substitution" && !substituted_for) {
+                    ctx.response.status = 400;
+                    ctx.response.body = {
+                        message:
+                            "Substitution requires substituted_for player.",
+                    };
+                    return;
+                }
+
+                // Validate assist-specific fields
+                if (event_type === "goal" && assisted_by) {
+                    // Check if assisting player exists
+                    const [assistingPlayer] = await db.query(
+                        `SELECT id FROM players WHERE id = ?`,
+                        [assisted_by],
+                    );
+                    if (!assistingPlayer) {
+                        ctx.response.status = 404;
+                        ctx.response.body = {
+                            message:
+                                `Assisting player with id ${assisted_by} not found.`,
+                        };
+                        return;
+                    }
+                }
+
+                // Insert into match_stats
+                await db.query(
+                    `INSERT INTO match_stats (
+                fixture_id, player_id, team_id, event_type, minute, assisted_by, substituted_for
+            ) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+                    [
+                        fixture_id,
+                        player_id,
+                        team_id,
+                        event_type,
+                        minute,
+                        assisted_by || null,
+                        substituted_for || null,
+                    ],
+                );
+            }
 
             ctx.response.status = 201;
-            ctx.response.body = { message: "Match event recorded." };
+            ctx.response.body = {
+                message: "Match events recorded successfully.",
+            };
         } catch (error) {
-            console.error(error);
+            console.error("Error adding match event:", error);
             ctx.response.status = 500;
             ctx.response.body = { message: "Internal server error." };
         }
